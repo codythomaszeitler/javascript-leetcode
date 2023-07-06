@@ -1,0 +1,3 @@
+Array.prototype.last = function() {
+    
+};

@@ -1,0 +1,19 @@
+{
+  "name": "javascript-leetcode",
+  "version": "1.0.0",
+  "description": "Source directory for Cody Zeitler's leetcode javascript practice.",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codythomaszeitler/javascript-leetcode.git"
+  },
+  "author": "Cody T. Zeitler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codythomaszeitler/javascript-leetcode/issues"
+  },
+  "homepage": "https://github.com/codythomaszeitler/javascript-leetcode#readme"
+}
