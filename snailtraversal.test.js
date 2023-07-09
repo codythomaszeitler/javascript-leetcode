@@ -49,8 +49,6 @@ describe("snail traversal", () => {
     ];
 
     const output = nums.snail(rowsCount, colsCount);
-    console.log(output);
-
     expect(expected).toEqual(output);
 
   });

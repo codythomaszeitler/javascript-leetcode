@@ -25,7 +25,7 @@ TimeLimitedCache.prototype.set = function (key, value, duration) {
     value,
   };
 
-  if(cacheItem && !this.isExpired(cacheItem)) {
+  if (cacheItem && !this.isExpired(cacheItem)) {
     return true;
   } else {
     return false;
@@ -38,7 +38,7 @@ TimeLimitedCache.prototype.set = function (key, value, duration) {
  */
 TimeLimitedCache.prototype.get = function (key) {
   const cacheItem = this.cache[key];
-  if (!cacheItem && this.isExpired(cacheItem)) {
+  if (!cacheItem || this.isExpired(cacheItem)) {
     return -1;
   } else {
     return this.cache[key].value;
@@ -49,8 +49,8 @@ TimeLimitedCache.prototype.get = function (key) {
  * @return {number} count of non-expired keys
  */
 TimeLimitedCache.prototype.count = function () {
-  return Object.values(this.cache).filter((cacheItem) =>
-    !this.isExpired(cacheItem)
+  return Object.values(this.cache).filter(
+    (cacheItem) => !this.isExpired(cacheItem)
   ).length;
 };
 
@@ -65,22 +65,23 @@ TimeLimitedCache.prototype.count = function () {
 describe("time limited cache", () => {
   it("test 1", () => {
     const testObject = new TimeLimitedCache();
-    expect(testObject.set(1, 42, 1000)).toBeNull();
+    expect(testObject.set(1, 42, 1000)).toBeFalsy();
     const value = testObject.get(1);
 
     expect(value).toBe(42);
     expect(testObject.count()).toBe(1);
   });
 
-  it("test 2", (done) => {
+  it("test 2", async () => {
     const testObject = new TimeLimitedCache();
-    testObject.set(1, 42, 1000);
-    expect(testObject.set(1, 42, 1000)).toBeTruthy();
+    testObject.set(1, 42, 10);
+    expect(testObject.set(1, 42, 10)).toBeTruthy();
 
-    setTimeout(() => {
-      const value = testObject.get(1);
-      expect(value).toBe(-1);
-      done();
-    }, 1001);
+    await new Promise((resolve) => {
+      setTimeout(resolve, 11);
+    });
+
+    const value = testObject.get(1);
+    expect(value).toBe(-1);
   });
 });

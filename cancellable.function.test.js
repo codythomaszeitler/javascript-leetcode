@@ -70,7 +70,7 @@ describe("cancellable function", () => {
       await promise;
       expect(true).toBeFalsy();
     } catch (e) {
-      console.log(e);
+      expect(e).toBeTruthy();
     }
   });
 

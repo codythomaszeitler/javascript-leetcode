@@ -67,7 +67,6 @@ describe("instance of check", () => {
       }
 
       const meow = new A();
-      console.log(meow);
     }
 
     Object.setPrototypeOf(A.prototype, B.prototype);
@@ -76,8 +75,6 @@ describe("instance of check", () => {
 
     const testObject = new A();
     testObject.foo();
-
-    console.log(testObject);
   });
 
   it("should do Object create null without issue", () => {
@@ -98,8 +95,6 @@ describe("instance of check", () => {
         this.value++;
       }
     }
-
-    console.log(A.prototype);
 
     class B extends A {
       value;
