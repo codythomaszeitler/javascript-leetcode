@@ -1,6 +1,15 @@
+
 function memoize(fn) {
+    const savedCalls = new Map();
     return function(...args) {
-        
+        const key = JSON.stringify(args);
+        if (savedCalls.has(key)) {
+            return savedCalls.get(key);
+        }
+
+        const result = fn(...args);
+        savedCalls.set(key, result); 
+        return result;
     }
 }
 
