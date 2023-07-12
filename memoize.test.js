@@ -1,99 +1,38 @@
-function TrieNode({ key, length }) {
-  this.nodes = [];
-  this.key = key;
-  this.length = length;
-}
-
-TrieNode.prototype.get = function (key) {
-  return this.nodes.find((node) => node.key === stringify(key));
-};
 
 function Trie() {
-  this.nodes = [];
-}
-
-function doesTrieHave(node, args) {
-  return (
-    Object.hasOwn(node, "key") &&
-    node.key === stringify(args[0]) &&
-    args.length === node.length
-  );
-}
-
-let id = 0;
-function stringify(key) {
-  if (isObject(key)) {
-    if (!key.__uniqueId) {
-      Object.defineProperty(key, "__uniqueId", {
-        value : id++,
-        enumerable : false
-      });
-    }
-    return "__uniqueId " + key.__uniqueId;
-  } else {
-    return key === undefined || key === null ? key : JSON.stringify(key);
-  }
-}
-
-function isObject(toCheck) {
-  return (
-    typeof toCheck === "object" && !Array.isArray(toCheck) && toCheck !== null
-  );
+  this.nodes = new Map();
 }
 
 Trie.prototype.get = function (args) {
-  let node = this.nodes.find((node) => doesTrieHave(node, args));
-  if (!node) {
-    return undefined;
+  let prev = this;
+  for (let i = 0; i < args.length; i++) {
+    prev = prev.nodes.get(args[i]);
   }
-
-  for (let i = 1; i < args.length; i++) {
-    node = node.get(args[i]);
-    if (!node) {
-      return undefined;
-    }
-  }
-  return node.value;
+  return prev.value;
 };
 
 Trie.prototype.has = function (args) {
-  let node = this.nodes.find((node) => doesTrieHave(node, args));
-  if (!node) {
-    return false;
-  }
-
-  for (let i = 1; i < args.length; i++) {
-    node = node.get(args[i]);
-    if (!node) {
+  let prev = this;
+  for (let i = 0; i < args.length; i++) {
+    prev = prev.nodes.get(args[i]);
+    if (prev === undefined) {
       return false;
     }
   }
-  return Object.hasOwn(node, "value");
+  return Object.hasOwn(prev, "value"); 
 };
 
 Trie.prototype.put = function (args, result) {
-  let prev = this.nodes.find((node) => doesTrieHave(node, args));
-  if (!prev) {
-    prev = new TrieNode({ key: stringify(args[0]), length: args.length });
-    this.nodes.push(prev);
-  }
-
-  if (args.length === 0 || args.length === 1) {
-    prev.value = result;
-  }
-
-  for (let i = 1; i < args.length; i++) {
-    let node = prev.get(args[i]);
-    if (!node) {
-      node = new TrieNode({ key: stringify(args[i]) });
+  let prev = this;
+  for (let i = 0; i < args.length; i++) {
+    let node = prev.nodes.get(args[i]);
+    if (node === undefined) {
+      node = new Trie();
+      prev.nodes.set(args[i], node);
     }
-
-    if (i === args.length - 1) {
-      node.value = result;
-    }
-    prev.nodes.push(node);
     prev = node;
   }
+  prev.value = result;
 };
 
 function memoize(fn) {
